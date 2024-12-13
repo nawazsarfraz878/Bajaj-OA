@@ -2,11 +2,10 @@ import json
 from datetime import datetime
 from math import sqrt
 
-# Load the dataset
+
 with open('/mnt/data/DataEngineeringQ2.json', 'r') as file:
     data = json.load(file)
 
-# Helper function to validate phone numbers
 def is_valid_indian_number(phone_number):
     if phone_number.startswith('+91'):
         phone_number = phone_number[3:]
@@ -16,7 +15,6 @@ def is_valid_indian_number(phone_number):
         return True
     return False
 
-# Helper function to calculate age
 def calculate_age(birth_date_str):
     if not birth_date_str:
         return None
@@ -24,7 +22,6 @@ def calculate_age(birth_date_str):
     today = datetime.today()
     return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
 
-# Step 1: Add isValidMobile column and count valid phone numbers
 valid_count = 0
 for record in data:
     phone_number = record.get('phoneNumber', '')
@@ -33,24 +30,21 @@ for record in data:
     if valid:
         valid_count += 1
 
-# Step 2: Prepare data for correlation calculation
 ages = []
 medicine_counts = []
 
 for record in data:
-    # Get age
+    
     birth_date = record['patientDetails'].get('birthDate')
     age = calculate_age(birth_date)
     
-    # Count medicines
     medicines = record['consultationData'].get('medicines', [])
     medicine_count = len(medicines)
     
-    if age is not None:  # Ensure age is valid
+    if age is not None:  
         ages.append(age)
         medicine_counts.append(medicine_count)
 
-# Step 3: Compute Pearson correlation coefficient
 def pearson_correlation(x, y):
     n = len(x)
     mean_x = sum(x) / n
